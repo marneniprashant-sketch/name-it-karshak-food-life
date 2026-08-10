@@ -1,0 +1,26 @@
+.static-page { padding-top: 72px; }
+.static-hero {
+  background: linear-gradient(135deg, var(--forest) 0%, var(--green) 100%);
+  padding: 60px 0 48px;
+}
+.static-hero h1 { font-size: clamp(28px,4vw,44px); font-weight: 800; color: white; margin: 16px 0 8px; }
+.static-hero p { color: rgba(255,255,255,0.7); font-size: 16px; }
+.breadcrumb { font-size: 13px; color: rgba(255,255,255,0.6); }
+.breadcrumb a { color: var(--gold); }
+.static-body { padding: 60px 24px 80px; }
+.static-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; margin-bottom: 48px; }
+.static-2col h2 { font-size: 26px; font-weight: 800; color: var(--forest); margin: 24px 0 12px; }
+.static-2col h2:first-child { margin-top: 0; }
+.static-2col p { color: #555; line-height: 1.75; margin-bottom: 16px; }
+.static-values { display: flex; flex-wrap: wrap; gap: 12px; }
+.value-pill {
+  background: var(--cream);
+  border: 1px solid var(--beige);
+  color: var(--forest);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 24px;
+}
+@media (max-width: 768px) { .static-2col { grid-template-columns: 1fr; gap: 32px; } }

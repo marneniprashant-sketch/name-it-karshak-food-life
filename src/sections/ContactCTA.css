@@ -1,0 +1,21 @@
+.contact-cta {
+  background: linear-gradient(135deg, var(--green) 0%, var(--forest) 100%);
+  padding: 80px 0;
+}
+.cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.cta-text h2 { font-size: clamp(28px,4vw,42px); font-weight: 800; color: white; margin-bottom: 8px; }
+.cta-text p { color: rgba(255,255,255,0.7); font-size: 16px; }
+.cta-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-outline-green {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: white; padding: 13px 28px;
+  border-radius: 6px; font-family: var(--font-head); font-weight: 600;
+  font-size: 15px; border: 2px solid rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;
+}
+.btn-outline-green:hover { background: rgba(255,255,255,0.1); border-color: white; }

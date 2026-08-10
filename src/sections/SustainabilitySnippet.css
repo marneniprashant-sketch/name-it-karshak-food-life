@@ -1,0 +1,35 @@
+.sustain-section { background: var(--cream); }
+.sustain-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+.sustain-text .section-label { color: var(--green); }
+.sustain-text h2 { font-size: clamp(30px,4vw,44px); font-weight: 800; color: var(--forest); margin-bottom: 16px; }
+.sustain-text p { color: #555; line-height: 1.75; margin-bottom: 28px; }
+.sustain-cards { display: flex; flex-direction: column; gap: 16px; }
+.sustain-card {
+  background: white;
+  border: 1px solid var(--beige);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.sustain-icon {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  background: var(--cream);
+  border: 1px solid var(--beige);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+}
+.sustain-card h4 { font-size: 14px; font-weight: 700; color: var(--forest); margin-bottom: 4px; }
+.sustain-card p { font-size: 13px; color: #666; line-height: 1.6; }
+
+@media (max-width: 900px) { .sustain-inner { grid-template-columns: 1fr; gap: 40px; } }

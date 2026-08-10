@@ -1,0 +1,54 @@
+.all-products-page { padding-top: 72px; }
+.ap-hero {
+  background: linear-gradient(135deg, var(--forest) 0%, var(--green) 100%);
+  padding: 60px 0 48px;
+}
+.ap-hero h1 { font-size: 40px; font-weight: 800; color: white; margin-bottom: 8px; margin-top: 16px; }
+.ap-hero p { color: rgba(255,255,255,0.7); font-size: 16px; }
+.breadcrumb { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+.breadcrumb a { color: var(--gold); }
+.breadcrumb a:hover { text-decoration: underline; }
+.ap-body { padding: 40px 24px 80px; }
+.ap-search-row { margin-bottom: 20px; }
+.ap-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 1px solid var(--beige);
+  border-radius: 10px;
+  padding: 12px 16px;
+  max-width: 560px;
+  color: #999;
+}
+.ap-search input { flex: 1; border: none; outline: none; font-size: 15px; font-family: var(--font-body); color: #333; }
+.ap-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.filter-btn {
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid var(--beige);
+  background: white;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn:hover, .filter-btn.active { background: var(--green); color: white; border-color: var(--green); }
+.ap-count { font-size: 13px; color: #888; margin-bottom: 24px; }
+.ap-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+}
+.prod-desc { font-size: 12px; color: #777; line-height: 1.55; margin-bottom: 10px; }
+.ap-empty { text-align: center; padding: 60px 20px; color: #888; }
+
+@media (max-width: 900px) { .ap-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 480px) { .ap-grid { grid-template-columns: repeat(2,1fr); gap: 12px; } }
