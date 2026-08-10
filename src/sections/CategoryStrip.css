@@ -2,7 +2,10 @@
   background: var(--green);
   padding: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.cat-strip::-webkit-scrollbar { display: none; }
 .cat-strip-inner {
   display: flex;
   align-items: center;

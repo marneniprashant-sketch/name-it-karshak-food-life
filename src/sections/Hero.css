@@ -238,22 +238,25 @@
 /* ── MOBILE ───────────────────────────────────────── */
 @media (max-width: 768px) {
   .hero-carousel {
-    height: 640px;
+    height: 100svh;
+    min-height: 580px;
+    max-height: 740px;
   }
   .hc-slide-bg {
-    background-position: center top;
+    background-position: center center;
   }
   .hc-overlay {
     background: linear-gradient(
-      to top,
-      rgba(8,24,14,0.92) 0%,
-      rgba(8,24,14,0.70) 45%,
-      rgba(8,24,14,0.25) 100%
+      to bottom,
+      rgba(8,24,14,0.3) 0%,
+      rgba(8,24,14,0.5) 40%,
+      rgba(8,24,14,0.88) 70%,
+      rgba(8,24,14,0.95) 100%
     ) !important;
   }
   .hc-content {
     align-items: flex-end;
-    padding-bottom: 72px;
+    padding-bottom: 85px;
     padding-top: 72px;
   }
   .hc-text {
@@ -261,19 +264,24 @@
     padding: 0;
   }
   .hc-headline {
-    font-size: clamp(32px, 8vw, 44px);
+    font-size: clamp(28px, 7vw, 40px);
+    margin-bottom: 10px;
   }
   .hc-sub {
-    font-size: 15px;
+    font-size: 14px;
+    margin-bottom: 20px;
   }
   .hc-btn-primary, .hc-btn-outline {
     width: 100%;
     justify-content: center;
+    min-height: 50px;
+    font-size: 14px;
   }
   .hc-btns {
     flex-direction: column;
     gap: 10px;
   }
   .hc-arrow { display: none; }
-  .hc-dots { bottom: 20px; }
+  .hc-dots { bottom: 18px; }
+  .hc-badge { font-size: 10px; padding: 4px 12px; margin-bottom: 10px; }
 }
