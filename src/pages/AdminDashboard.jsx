@@ -224,7 +224,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="adm-table-wrap">
                   <table className="adm-table">
-                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Product</th><th>Qty</th><th>Date</th><th>Status</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Product</th><th>Qty</th><th>Date</th><th>Status</th><th>Reply</th></tr></thead>
                     <tbody>
                       {enqLoading ? (
                         <tr><td colSpan={7} style={{textAlign:'center',padding:'24px',color:'#888'}}>Loading...</td></tr>
@@ -256,6 +256,24 @@ export default function AdminDashboard() {
                               <option value="responded">Responded</option>
                               <option value="closed">Closed</option>
                             </select>
+                          </td>
+                          <td>
+                            {e.email && e.email !== 'test@test.com' && (
+                              <a
+                                href={`mailto:${e.email}?subject=Re: Your Enquiry — Karshak Food Life&body=Dear ${e.name},%0A%0AThank you for reaching out to Karshak Food Life.%0A%0ARegarding your enquiry about ${e.product || e.category || 'our products'}:%0A%0A[Your response here]%0A%0ABest regards,%0AKarshak Food Life Team%0A+91 89194 99446`}
+                                style={{
+                                  display:'inline-flex', alignItems:'center', gap:'4px',
+                                  background:'var(--green)', color:'white',
+                                  padding:'5px 10px', borderRadius:'6px',
+                                  fontSize:'11px', fontFamily:'var(--font-head)',
+                                  fontWeight:600, textDecoration:'none',
+                                  whiteSpace:'nowrap'
+                                }}
+                                onClick={() => handleStatusChange(e.id, 'responded')}
+                              >
+                                ✉ Reply
+                              </a>
+                            )}
                           </td>
                         </tr>
                       ))}
