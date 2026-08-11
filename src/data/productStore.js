@@ -64,19 +64,16 @@ export async function initBin() {
 
 // ── ENQUIRIES ────────────────────────────────────────
 // Uses a separate approach: stores enquiries in localStorage + JSONBin
-const ENQ_BIN = '6a797764da38895dfecfd660' // same bin
+const ENQ_BIN = '6a7b3ad0da38895dfed6344a' // dedicated enquiries bin
 
 export async function fetchEnquiries() {
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
     const data = await res.json()
-    const cloud = data.record?.enquiries || []
-    // Also merge any localStorage fallback entries
+    const cloud = Array.isArray(data.record?.enquiries) ? data.record.enquiries : []
     const local = JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
-    // Merge: cloud first, then any local ones not already in cloud
     const cloudIds = new Set(cloud.map(e => e.id))
-    const merged = [...cloud, ...local.filter(e => !cloudIds.has(e.id))]
-    return merged
+    return [...cloud, ...local.filter(e => !cloudIds.has(e.id))]
   } catch {
     return JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
   }
@@ -89,43 +86,43 @@ export async function saveEnquiry(enquiry) {
     date: new Date().toLocaleDateString('en-IN'),
     status: 'pending',
   }
+  // Save to localStorage immediately as backup
   try {
-    // Read current bin
+    const local = JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
+    localStorage.setItem('kfl_enquiries', JSON.stringify([newEnquiry, ...local]))
+  } catch {}
+
+  // Save to dedicated JSONBin
+  try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
     const data = await res.json()
-    const current = data.record || {}
-    const enquiries = Array.isArray(current.enquiries) ? current.enquiries : []
-    const updated = { ...current, enquiries: [newEnquiry, ...enquiries] }
-    // Write back
+    const existing = Array.isArray(data.record?.enquiries) ? data.record.enquiries : []
     const putRes = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
       method: 'PUT',
       headers: HEADERS,
-      body: JSON.stringify(updated),
+      body: JSON.stringify({ enquiries: [newEnquiry, ...existing] }),
     })
-    if (!putRes.ok) throw new Error('PUT failed: ' + putRes.status)
-    return newEnquiry
+    if (putRes.ok) {
+      // Clear localStorage once saved to cloud
+      localStorage.removeItem('kfl_enquiries')
+    }
   } catch (e) {
-    // Fallback: save to localStorage so data isn't lost
-    console.warn('JSONBin save failed, using localStorage fallback', e)
-    try {
-      const local = JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
-      local.unshift(newEnquiry)
-      localStorage.setItem('kfl_enquiries', JSON.stringify(local))
-    } catch {}
-    return newEnquiry
+    console.warn('JSONBin enquiry save failed, kept in localStorage', e)
   }
+  return newEnquiry
 }
 
 export async function updateEnquiryStatus(id, status) {
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
     const data = await res.json()
-    const current = data.record || {}
-    const enquiries = (current.enquiries || []).map(e => e.id === id ? { ...e, status } : e)
+    const enquiries = Array.isArray(data.record?.enquiries)
+      ? data.record.enquiries.map(e => e.id === id ? { ...e, status } : e)
+      : []
     await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
       method: 'PUT',
       headers: HEADERS,
-      body: JSON.stringify({ ...current, enquiries }),
+      body: JSON.stringify({ enquiries }),
     })
   } catch (e) { console.warn('Status update failed', e) }
 }
