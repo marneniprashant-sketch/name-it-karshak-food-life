@@ -63,39 +63,56 @@ export async function initBin() {
 }
 
 // ── ENQUIRIES ────────────────────────────────────────
-const ENQ_BIN = '6a797764da38895dfecfd660' // same bin, stored under key "enquiries"
+// Uses a separate approach: stores enquiries in localStorage + JSONBin
+const ENQ_BIN = '6a797764da38895dfecfd660' // same bin
 
 export async function fetchEnquiries() {
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
     const data = await res.json()
-    return data.record?.enquiries || []
-  } catch { return [] }
+    const cloud = data.record?.enquiries || []
+    // Also merge any localStorage fallback entries
+    const local = JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
+    // Merge: cloud first, then any local ones not already in cloud
+    const cloudIds = new Set(cloud.map(e => e.id))
+    const merged = [...cloud, ...local.filter(e => !cloudIds.has(e.id))]
+    return merged
+  } catch {
+    return JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
+  }
 }
 
 export async function saveEnquiry(enquiry) {
+  const newEnquiry = {
+    ...enquiry,
+    id: `ENQ-${Date.now()}`,
+    date: new Date().toLocaleDateString('en-IN'),
+    status: 'pending',
+  }
   try {
-    // Fetch current data first
+    // Read current bin
     const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
     const data = await res.json()
     const current = data.record || {}
-    const enquiries = current.enquiries || []
-    const newEnquiry = {
-      ...enquiry,
-      id: `ENQ-${Date.now()}`,
-      date: new Date().toLocaleDateString('en-IN'),
-      status: 'pending',
-    }
+    const enquiries = Array.isArray(current.enquiries) ? current.enquiries : []
     const updated = { ...current, enquiries: [newEnquiry, ...enquiries] }
-    await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
+    // Write back
+    const putRes = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
       method: 'PUT',
       headers: HEADERS,
       body: JSON.stringify(updated),
     })
+    if (!putRes.ok) throw new Error('PUT failed: ' + putRes.status)
     return newEnquiry
   } catch (e) {
-    console.warn('Enquiry save failed', e)
-    return null
+    // Fallback: save to localStorage so data isn't lost
+    console.warn('JSONBin save failed, using localStorage fallback', e)
+    try {
+      const local = JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
+      local.unshift(newEnquiry)
+      localStorage.setItem('kfl_enquiries', JSON.stringify(local))
+    } catch {}
+    return newEnquiry
   }
 }
 
