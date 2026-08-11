@@ -1,19 +1,53 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import { Send } from "lucide-react"
-import { categories } from "../data/products"
-import PageHero from "../components/PageHero"
-import "./Contact.css"
+﻿import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Send } from 'lucide-react'
+import { categories } from '../data/products'
+import { saveEnquiry } from '../data/productStore'
+import PageHero from '../components/PageHero'
+import './Contact.css'
+
+const W3F_KEY = '133c3246-422d-4838-abdb-db60e264eead'
 
 export default function Contact() {
   const [form, setForm] = useState({
-    name:"", company:"", email:"", phone:"",
-    country:"", category:"", product:"",
-    quantity:"", packaging:"", message:""
+    name: '', company: '', email: '', phone: '',
+    country: '', category: '', product: '',
+    quantity: '', packaging: '', message: ''
   })
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const handle = e => setForm({ ...form, [e.target.name]: e.target.value })
-  const submit = e => { e.preventDefault(); setSent(true) }
+
+  const submit = async e => {
+    e.preventDefault()
+    setSubmitting(true)
+    // Send email notification via Web3Forms
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: W3F_KEY,
+          subject: 'New Enquiry from ' + form.name + ' — Karshak Food Life',
+          from_name: 'Karshak Food Life Website',
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          company: form.company,
+          country: form.country,
+          category: form.category,
+          product: form.product,
+          quantity: form.quantity,
+          packaging: form.packaging,
+          message: form.message,
+        }),
+      })
+    } catch (err) { console.warn('Web3Forms error', err) }
+    // Also save to JSONBin for admin panel view
+    await saveEnquiry(form)
+    setSubmitting(false)
+    setSent(true)
+  }
 
   return (
     <div className="static-page">
@@ -31,7 +65,7 @@ export default function Contact() {
             <div className="contact-placeholders">
               <div>
                 <strong>Phone</strong>
-                <a href="tel:+918919499446" style={{color:"inherit", fontStyle:"normal"}}>+91 89194 99446</a>
+                <a href="tel:+918919499446" style={{ color: 'inherit', fontStyle: 'normal' }}>+91 89194 99446</a>
               </div>
               <div>
                 <strong>Email</strong>
@@ -39,7 +73,7 @@ export default function Contact() {
               </div>
               <div>
                 <strong>Location</strong>
-                <span>Flat No-503, New Srusti Home&apos;s,<br/>ESI Metro Pillar No-1010,<br/>SR Nagar, Hyderabad,<br/>Telangana - 500038</span>
+                <span>Flat No-503, New Srusti Homes,<br />ESI Metro Pillar No-1010,<br />SR Nagar, Hyderabad,<br />Telangana - 500038</span>
               </div>
             </div>
             <div className="contact-links">
@@ -56,11 +90,11 @@ export default function Contact() {
           ) : (
             <form onSubmit={submit} className="contact-form">
               <div className="form-row">
-                <input name="name" placeholder="Name" value={form.name} onChange={handle} required />
+                <input name="name" placeholder="Name *" value={form.name} onChange={handle} required />
                 <input name="company" placeholder="Company" value={form.company} onChange={handle} />
               </div>
               <div className="form-row">
-                <input name="email" type="email" placeholder="Email" value={form.email} onChange={handle} required />
+                <input name="email" type="email" placeholder="Email *" value={form.email} onChange={handle} required />
                 <input name="phone" placeholder="Phone" value={form.phone} onChange={handle} />
               </div>
               <div className="form-row">
@@ -76,7 +110,10 @@ export default function Contact() {
               </div>
               <input className="full-input" name="packaging" placeholder="Packaging Requirement" value={form.packaging} onChange={handle} />
               <textarea name="message" placeholder="Message" rows={5} value={form.message} onChange={handle} />
-              <button type="submit" className="btn-primary submit-btn">Submit Inquiry <Send size={15}/></button>
+              <button type="submit" className="btn-primary submit-btn" disabled={submitting}>
+                {submitting ? 'Submitting...' : 'Submit Inquiry'}
+                {!submitting && <Send size={15} />}
+              </button>
             </form>
           )}
         </div>
