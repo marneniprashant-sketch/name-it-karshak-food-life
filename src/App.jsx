@@ -14,7 +14,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
 import Owner from './pages/Owner'
-import AdminLogin from './pages/AdminLogin'
+import Cart from './pages/Cart'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminProducts from './pages/AdminProducts'
 import CategoryPage from './pages/CategoryPage'
@@ -63,6 +63,7 @@ export default function App() {
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/sustainability" element={<Sustainability />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />

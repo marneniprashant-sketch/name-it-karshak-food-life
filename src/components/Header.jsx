@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { Menu, X, Search, User, LogIn, UserPlus, LogOut, ChevronDown } from 'lucide-react'
+import { Menu, X, Search, User, LogIn, UserPlus, LogOut, ChevronDown, ShoppingCart } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 import './Header.css'
 
 export default function Header() {
   const { user, logout } = useAuth()
+  const { totalItems } = useCart()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQ, setSearchQ] = useState('')
@@ -60,6 +62,12 @@ export default function Header() {
           <button className="icon-btn" onClick={()=>setSearchOpen(!searchOpen)} aria-label="Search">
             <Search size={20} />
           </button>
+
+          {/* Cart */}
+          <Link to="/cart" className="cart-icon-btn" aria-label="Cart">
+            <ShoppingCart size={20} />
+            {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+          </Link>
 
           {/* Profile / Login */}
           <div className="profile-wrap" ref={profileRef}>

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { ArrowRight, MessageSquare, Phone, ChevronDown, ChevronUp } from 'lucide-react'
-import { categories } from '../data/products'
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import { ArrowRight, MessageSquare, Phone, ChevronDown, ChevronUp, ShoppingCart, Zap, Plus, Minus } from 'lucide-react'
 import { useProducts } from '../context/ProductContext'
+import { useCart } from '../context/CartContext'
 import PageHero from '../components/PageHero'
 import './ProductDetail.css'
 
@@ -21,10 +21,25 @@ function Accordion({ title, children }) {
 
 export default function ProductDetail() {
   const { category, slug } = useParams()
+  const navigate = useNavigate()
   const { getProductBySlug, getProductsByCategory, categories } = useProducts()
+  const { addToCart } = useCart()
   const product = getProductBySlug(category, slug)
   const cat = categories.find(c => c.id === category)
   const related = getProductsByCategory(category).filter(p => p.slug !== slug).slice(0, 4)
+  const [qty, setQty] = useState(1)
+  const [added, setAdded] = useState(false)
+
+  const handleAddToCart = () => {
+    addToCart(product, qty)
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
+  }
+
+  const handleBuyNow = () => {
+    addToCart(product, qty)
+    navigate('/cart')
+  }
 
   if (!product) return (
     <div style={{paddingTop:'120px',textAlign:'center',minHeight:'60vh'}}>
@@ -68,9 +83,25 @@ export default function ProductDetail() {
             <div><span>Packaging</span><strong>To be updated</strong></div>
           </div>
 
+          {/* Qty + Cart + Buy Now */}
+          <div className="pd-qty-row">
+            <button className="pd-qty-btn" onClick={() => setQty(q => Math.max(1, q - 1))}><Minus size={14}/></button>
+            <span className="pd-qty-val">{qty}</span>
+            <button className="pd-qty-btn" onClick={() => setQty(q => q + 1)}><Plus size={14}/></button>
+            <span className="pd-qty-unit">{product.unit || 'kg'}</span>
+          </div>
+
           <div className="pd-actions">
-            <Link to="/contact" className="btn-primary"><MessageSquare size={16}/> Request Quote</Link>
-            <Link to="/contact" className="btn-gold"><Phone size={16}/> Contact Sales</Link>
+            <button className={`btn-primary${added ? ' pd-added' : ''}`} onClick={handleAddToCart}>
+              <ShoppingCart size={16}/> {added ? 'Added to Cart ✓' : 'Add to Cart'}
+            </button>
+            <button className="btn-gold" onClick={handleBuyNow}>
+              <Zap size={16}/> Buy Now
+            </button>
+          </div>
+          <div className="pd-action-links">
+            <Link to="/contact"><MessageSquare size={13}/> Request Bulk Quote</Link>
+            <Link to="/contact"><Phone size={13}/> Contact Sales</Link>
           </div>
         </div>
       </div>

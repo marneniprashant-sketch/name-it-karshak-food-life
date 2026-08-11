@@ -52,3 +52,12 @@
 
 @media (max-width: 900px) { .ap-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 480px) { .ap-grid { grid-template-columns: repeat(2,1fr); gap: 12px; } }
+
+.pc-footer { display: flex; align-items: center; justify-content: space-between; }
+.pc-cart-btn {
+  background: var(--green); border: none; color: white;
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+}
+.pc-cart-btn:hover { background: var(--forest); }

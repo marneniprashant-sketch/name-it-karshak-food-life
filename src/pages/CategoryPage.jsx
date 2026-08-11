@@ -1,14 +1,15 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
-import { categories } from '../data/products'
+import { ArrowRight, ShoppingCart } from 'lucide-react'
 import { useProducts } from '../context/ProductContext'
+import { useCart } from '../context/CartContext'
 import PageHero from '../components/PageHero'
 import './CategoryPage.css'
 
 export default function CategoryPage() {
   const { category } = useParams()
   const { getProductsByCategory, categories } = useProducts()
+  const { addToCart } = useCart()
   const cat = categories.find(c => c.id === category)
   const prods = getProductsByCategory(category)
 
@@ -40,7 +41,12 @@ export default function CategoryPage() {
                 <h4>{p.name}</h4>
                 {p.localName && <span className="local-name">{p.localName}</span>}
                 <p className="prod-desc">{p.shortDescription}</p>
-                <span className="product-link">View Product <ArrowRight size={13}/></span>
+                <div className="pc-footer">
+                  <span className="product-link">View Product <ArrowRight size={13}/></span>
+                  <button className="pc-cart-btn" onClick={e => { e.preventDefault(); addToCart(p, 1) }} title="Add to Cart">
+                    <ShoppingCart size={14}/>
+                  </button>
+                </div>
               </div>
             </Link>
           ))}

@@ -104,3 +104,33 @@
   .pd-main { grid-template-columns: 1fr; gap: 32px; }
   .related-grid { grid-template-columns: repeat(2,1fr); }
 }
+
+/* Cart / Buy Now */
+.pd-qty-row {
+  display: flex; align-items: center; gap: 0;
+  border: 1.5px solid #dde8dd; border-radius: 10px;
+  overflow: hidden; width: fit-content; margin-bottom: 16px;
+}
+.pd-qty-btn {
+  background: #f5faf5; border: none; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--green); font-size: 16px; transition: background 0.15s;
+}
+.pd-qty-btn:hover { background: var(--green); color: white; }
+.pd-qty-val {
+  width: 44px; text-align: center;
+  font-family: var(--font-head); font-weight: 800; font-size: 15px; color: var(--forest);
+}
+.pd-qty-unit { padding: 0 12px; font-size: 12px; color: #888; background: #f5faf5; height: 40px; display: flex; align-items: center; }
+
+.pd-added { background: #4F9E45 !important; }
+
+.pd-action-links {
+  display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;
+}
+.pd-action-links a {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-head); font-weight: 600; font-size: 13px;
+  color: #888; text-decoration: none; transition: color 0.2s;
+}
+.pd-action-links a:hover { color: var(--green); }

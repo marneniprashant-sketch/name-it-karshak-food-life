@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { Search, ArrowRight } from 'lucide-react'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
+import { Search, ArrowRight, ShoppingCart } from 'lucide-react'
 import { useProducts } from '../context/ProductContext'
+import { useCart } from '../context/CartContext'
 import PageHero from '../components/PageHero'
 import './AllProducts.css'
 
@@ -9,6 +10,8 @@ const formTypes = ['All', 'Whole', 'Powder', 'Seed', 'Nut', 'Pulse', 'Grain']
 
 export default function AllProducts() {
   const { products, categories, loading } = useProducts()
+  const { addToCart } = useCart()
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') || '')
   const [activeCat, setActiveCat] = useState('all')
@@ -58,7 +61,12 @@ export default function AllProducts() {
                 <h4>{p.name}</h4>
                 {p.localName && <span className="local-name">{p.localName}</span>}
                 <p className="prod-desc">{p.shortDescription}</p>
-                <span className="product-link">View Product <ArrowRight size={13}/></span>
+                <div className="pc-footer">
+                  <Link to={`/products/${p.category}/${p.slug}`} className="product-link">View Product <ArrowRight size={13}/></Link>
+                  <button className="pc-cart-btn" onClick={e => { e.preventDefault(); addToCart(p, 1) }} title="Add to Cart">
+                    <ShoppingCart size={14}/>
+                  </button>
+                </div>
               </div>
             </Link>
           ))}

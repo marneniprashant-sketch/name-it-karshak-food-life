@@ -332,3 +332,31 @@
   .profile-btn { padding: 7px 10px 7px 8px; }
   .profile-chev { display: none; }
 }
+
+/* ── CART ICON ────────────────────────────────────── */
+.cart-icon-btn {
+  position: relative;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+.cart-icon-btn:hover { background: rgba(255,255,255,0.2); }
+.cart-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: var(--gold);
+  color: white;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 10px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--forest);
+}
