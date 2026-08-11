@@ -17,6 +17,15 @@ const ENQ_HEADERS = {
   'X-Bin-Versioning': 'false',
 }
 
+// Helper for ENQ fetch to avoid CORS issues
+async function enqFetch(url, options = {}) {
+  return fetch(url, {
+    ...options,
+    mode: 'cors',
+    headers: ENQ_HEADERS,
+  })
+}
+
 // Load products from JSONBin (falls back to localStorage cache, then defaults)
 export async function fetchProducts() {
   try {

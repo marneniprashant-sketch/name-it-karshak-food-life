@@ -151,7 +151,7 @@ export default function AdminDashboard() {
                           <td>{e.product || e.category || '—'}</td>
                           <td>{e.quantity || '—'}</td>
                           <td>{e.date}</td>
-                          <td><StatusBadge status={e.status}/></td>
+                          <td><StatusBadge status={e.status || 'pending'}/></td>
                         </tr>
                       ))}
                     </tbody>
@@ -224,14 +224,22 @@ export default function AdminDashboard() {
                       ) : enquiries.map(e=>(
                         <tr key={e.id}>
                           <td className="adm-id">{e.id}</td>
-                          <td><strong>{e.name}</strong>{e.company && <div style={{fontSize:'11px',color:'#aaa'}}>{e.company}</div>}</td>
+                          <td>
+                            <strong>{e.name}</strong>
+                            {e.company && <div style={{fontSize:'11px',color:'#aaa'}}>{e.company}</div>}
+                          </td>
                           <td className="adm-email">{e.email}</td>
-                          <td>{e.product || e.category || '—'}{e.quantity && <div style={{fontSize:'11px',color:'#aaa'}}>{e.quantity}</div>}</td>
-                          <td>{e.message ? e.message.slice(0,40)+'...' : '—'}</td>
+                          <td>
+                            {e.product || e.category || '—'}
+                            {e.quantity && <div style={{fontSize:'11px',color:'#aaa'}}>{e.quantity}</div>}
+                          </td>
+                          <td style={{maxWidth:'160px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                            {e.message ? e.message.slice(0,50) : (e.phone || '—')}
+                          </td>
                           <td>{e.date}</td>
                           <td>
                             <select
-                              value={e.status}
+                              value={e.status || 'pending'}
                               onChange={ev => handleStatusChange(e.id, ev.target.value)}
                               style={{fontSize:'11px',padding:'3px 6px',borderRadius:'6px',border:'1px solid #ddd',cursor:'pointer'}}
                             >
