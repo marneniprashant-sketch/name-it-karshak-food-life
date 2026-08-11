@@ -9,6 +9,11 @@ const LS_CACHE = 'kfl_products_cache'
 const HEADERS = {
   'Content-Type': 'application/json',
   'X-Master-Key': MASTER_KEY,
+}
+
+const ENQ_HEADERS = {
+  'Content-Type': 'application/json',
+  'X-Master-Key': MASTER_KEY,
   'X-Bin-Versioning': 'false',
 }
 
@@ -68,7 +73,7 @@ const ENQ_BIN = '6a7b3ad0da38895dfed6344a' // dedicated enquiries bin
 
 export async function fetchEnquiries() {
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: ENQ_HEADERS })
     const data = await res.json()
     const cloud = Array.isArray(data.record?.enquiries) ? data.record.enquiries : []
     const local = JSON.parse(localStorage.getItem('kfl_enquiries') || '[]')
@@ -94,16 +99,15 @@ export async function saveEnquiry(enquiry) {
 
   // Save to dedicated JSONBin
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: ENQ_HEADERS })
     const data = await res.json()
     const existing = Array.isArray(data.record?.enquiries) ? data.record.enquiries : []
     const putRes = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
       method: 'PUT',
-      headers: HEADERS,
+      headers: ENQ_HEADERS,
       body: JSON.stringify({ enquiries: [newEnquiry, ...existing] }),
     })
     if (putRes.ok) {
-      // Clear localStorage once saved to cloud
       localStorage.removeItem('kfl_enquiries')
     }
   } catch (e) {
@@ -114,14 +118,14 @@ export async function saveEnquiry(enquiry) {
 
 export async function updateEnquiryStatus(id, status) {
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: ENQ_HEADERS })
     const data = await res.json()
     const enquiries = Array.isArray(data.record?.enquiries)
       ? data.record.enquiries.map(e => e.id === id ? { ...e, status } : e)
       : []
     await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
       method: 'PUT',
-      headers: HEADERS,
+      headers: ENQ_HEADERS,
       body: JSON.stringify({ enquiries }),
     })
   } catch (e) { console.warn('Status update failed', e) }
