@@ -213,6 +213,15 @@ export default function AdminDashboard() {
             {/* ENQUIRIES */}
             {tab === 'enquiries' && (
               <>
+                <div className="section-head-row" style={{marginBottom:'16px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                  <span style={{fontSize:'13px',color:'#888'}}>{enquiries.length} enquir{enquiries.length !== 1 ? 'ies' : 'y'} total</span>
+                  <button
+                    onClick={() => { setEnqLoading(true); fetchEnquiries().then(d => { setEnquiries(d); setEnqLoading(false) }) }}
+                    style={{background:'var(--green)',color:'white',border:'none',padding:'7px 14px',borderRadius:'7px',fontFamily:'var(--font-head)',fontWeight:600,fontSize:'12px',cursor:'pointer'}}
+                  >
+                    ↻ Refresh
+                  </button>
+                </div>
                 <div className="adm-table-wrap">
                   <table className="adm-table">
                     <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Product</th><th>Qty</th><th>Date</th><th>Status</th></tr></thead>
