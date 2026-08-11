@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { products, categories } from '../data/products'
 import { useProducts } from '../context/ProductContext'
+import { fetchEnquiries, updateEnquiryStatus } from '../data/productStore'
 import './AdminDashboard.css'
 
 const NAV = [
@@ -49,6 +50,17 @@ export default function AdminDashboard() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('dashboard')
   const [sideOpen, setSideOpen] = useState(false)
+  const [enquiries, setEnquiries] = useState([])
+  const [enqLoading, setEnqLoading] = useState(true)
+
+  useEffect(() => {
+    fetchEnquiries().then(data => { setEnquiries(data); setEnqLoading(false) })
+  }, [])
+
+  const handleStatusChange = async (id, status) => {
+    await updateEnquiryStatus(id, status)
+    setEnquiries(prev => prev.map(e => e.id === id ? { ...e, status } : e))
+  }
 
   const logout = () => {
     sessionStorage.removeItem('kfl_admin')
@@ -111,11 +123,11 @@ export default function AdminDashboard() {
                   </div>
                   <div className="adm-stat-card">
                     <div className="adm-stat-icon gold"><FileText size={22}/></div>
-                    <div><span className="adm-stat-num">{DEMO_ENQUIRIES.length}</span><span className="adm-stat-label">Total Enquiries</span></div>
+                    <div><span className="adm-stat-num">{enquiries.length}</span><span className="adm-stat-label">Total Enquiries</span></div>
                   </div>
                   <div className="adm-stat-card">
                     <div className="adm-stat-icon orange"><TrendingUp size={22}/></div>
-                    <div><span className="adm-stat-num">{DEMO_ENQUIRIES.filter(e=>e.status==='pending').length}</span><span className="adm-stat-label">Pending</span></div>
+                    <div><span className="adm-stat-num">{enquiries.filter(e=>e.status==='pending').length}</span><span className="adm-stat-label">Pending</span></div>
                   </div>
                   <div className="adm-stat-card">
                     <div className="adm-stat-icon blue"><Users size={22}/></div>
@@ -128,12 +140,16 @@ export default function AdminDashboard() {
                   <table className="adm-table">
                     <thead><tr><th>ID</th><th>Name</th><th>Product</th><th>Qty</th><th>Date</th><th>Status</th></tr></thead>
                     <tbody>
-                      {DEMO_ENQUIRIES.slice(0,4).map(e=>(
+                      {enqLoading ? (
+                        <tr><td colSpan={6} style={{textAlign:'center',padding:'20px',color:'#888'}}>Loading enquiries...</td></tr>
+                      ) : enquiries.length === 0 ? (
+                        <tr><td colSpan={6} style={{textAlign:'center',padding:'20px',color:'#aaa'}}>No enquiries yet</td></tr>
+                      ) : enquiries.slice(0,4).map(e=>(
                         <tr key={e.id}>
                           <td className="adm-id">{e.id}</td>
                           <td>{e.name}</td>
-                          <td>{e.product}</td>
-                          <td>{e.qty}</td>
+                          <td>{e.product || e.category || '—'}</td>
+                          <td>{e.quantity || '—'}</td>
                           <td>{e.date}</td>
                           <td><StatusBadge status={e.status}/></td>
                         </tr>
@@ -201,15 +217,29 @@ export default function AdminDashboard() {
                   <table className="adm-table">
                     <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Product</th><th>Qty</th><th>Date</th><th>Status</th></tr></thead>
                     <tbody>
-                      {DEMO_ENQUIRIES.map(e=>(
+                      {enqLoading ? (
+                        <tr><td colSpan={7} style={{textAlign:'center',padding:'24px',color:'#888'}}>Loading...</td></tr>
+                      ) : enquiries.length === 0 ? (
+                        <tr><td colSpan={7} style={{textAlign:'center',padding:'24px',color:'#aaa'}}>No enquiries received yet. They will appear here when users submit the contact form.</td></tr>
+                      ) : enquiries.map(e=>(
                         <tr key={e.id}>
                           <td className="adm-id">{e.id}</td>
-                          <td><strong>{e.name}</strong></td>
+                          <td><strong>{e.name}</strong>{e.company && <div style={{fontSize:'11px',color:'#aaa'}}>{e.company}</div>}</td>
                           <td className="adm-email">{e.email}</td>
-                          <td>{e.product}</td>
-                          <td>{e.qty}</td>
+                          <td>{e.product || e.category || '—'}{e.quantity && <div style={{fontSize:'11px',color:'#aaa'}}>{e.quantity}</div>}</td>
+                          <td>{e.message ? e.message.slice(0,40)+'...' : '—'}</td>
                           <td>{e.date}</td>
-                          <td><StatusBadge status={e.status}/></td>
+                          <td>
+                            <select
+                              value={e.status}
+                              onChange={ev => handleStatusChange(e.id, ev.target.value)}
+                              style={{fontSize:'11px',padding:'3px 6px',borderRadius:'6px',border:'1px solid #ddd',cursor:'pointer'}}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="responded">Responded</option>
+                              <option value="closed">Closed</option>
+                            </select>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

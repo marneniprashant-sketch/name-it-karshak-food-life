@@ -61,3 +61,54 @@ export async function initBin() {
     }
   } catch {}
 }
+
+// ── ENQUIRIES ────────────────────────────────────────
+const ENQ_BIN = '6a797764da38895dfecfd660' // same bin, stored under key "enquiries"
+
+export async function fetchEnquiries() {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
+    const data = await res.json()
+    return data.record?.enquiries || []
+  } catch { return [] }
+}
+
+export async function saveEnquiry(enquiry) {
+  try {
+    // Fetch current data first
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
+    const data = await res.json()
+    const current = data.record || {}
+    const enquiries = current.enquiries || []
+    const newEnquiry = {
+      ...enquiry,
+      id: `ENQ-${Date.now()}`,
+      date: new Date().toLocaleDateString('en-IN'),
+      status: 'pending',
+    }
+    const updated = { ...current, enquiries: [newEnquiry, ...enquiries] }
+    await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
+      method: 'PUT',
+      headers: HEADERS,
+      body: JSON.stringify(updated),
+    })
+    return newEnquiry
+  } catch (e) {
+    console.warn('Enquiry save failed', e)
+    return null
+  }
+}
+
+export async function updateEnquiryStatus(id, status) {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}/latest`, { headers: HEADERS })
+    const data = await res.json()
+    const current = data.record || {}
+    const enquiries = (current.enquiries || []).map(e => e.id === id ? { ...e, status } : e)
+    await fetch(`https://api.jsonbin.io/v3/b/${ENQ_BIN}`, {
+      method: 'PUT',
+      headers: HEADERS,
+      body: JSON.stringify({ ...current, enquiries }),
+    })
+  } catch (e) { console.warn('Status update failed', e) }
+}
