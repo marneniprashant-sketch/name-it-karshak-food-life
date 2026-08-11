@@ -134,3 +134,56 @@
   color: #888; text-decoration: none; transition: color 0.2s;
 }
 .pd-action-links a:hover { color: var(--green); }
+
+/* Weight selector */
+.pd-weight-label {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--forest);
+  margin-bottom: 10px;
+}
+.pd-weight-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.pd-weight-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #dde8dd;
+  background: white;
+  color: var(--forest);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pd-weight-btn:hover { border-color: var(--green); color: var(--green); }
+.pd-weight-btn.active { background: var(--green); color: white; border-color: var(--green); }
+.pd-weight-btn.bulk { border-color: var(--gold); color: var(--gold); }
+.pd-weight-btn.bulk.active { background: var(--gold); color: white; border-color: var(--gold); }
+
+.pd-price-display {
+  font-family: var(--font-head);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 16px;
+}
+.pd-price-display span { font-size: 13px; color: #888; font-weight: 400; margin-left: 4px; }
+
+.pd-bulk-note {
+  background: #fffbf0;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #7a6020;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}

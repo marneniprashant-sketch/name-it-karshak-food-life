@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { ArrowRight, MessageSquare, Phone, ChevronDown, ChevronUp, ShoppingCart, Zap, Plus, Minus } from 'lucide-react'
+import { ArrowRight, MessageSquare, Phone, ChevronDown, ChevronUp, ShoppingCart, Zap } from 'lucide-react'
 import { useProducts } from '../context/ProductContext'
 import { useCart } from '../context/CartContext'
 import PageHero from '../components/PageHero'
@@ -28,16 +28,30 @@ export default function ProductDetail() {
   const cat = categories.find(c => c.id === category)
   const related = getProductsByCategory(category).filter(p => p.slug !== slug).slice(0, 4)
   const [qty, setQty] = useState(1)
+  const [weight, setWeight] = useState('500g')
   const [added, setAdded] = useState(false)
 
+  const WEIGHT_OPTIONS = ['500g', '1kg', '2kg', '3kg', '4kg', '5kg', 'Bulk']
+
+  const isBulk = weight === 'Bulk'
+
+  // Calculate price based on weight selection
+  const getPrice = () => {
+    if (!product.price) return null
+    const base = parseFloat(product.price)
+    const map = { '500g': base * 0.5, '1kg': base, '2kg': base * 2, '3kg': base * 3, '4kg': base * 4, '5kg': base * 5 }
+    return map[weight] ? map[weight].toFixed(0) : null
+  }
+  const displayPrice = getPrice()
+
   const handleAddToCart = () => {
-    addToCart(product, qty)
+    addToCart({ ...product, selectedWeight: weight, unit: weight }, qty)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
 
   const handleBuyNow = () => {
-    addToCart(product, qty)
+    addToCart({ ...product, selectedWeight: weight, unit: weight }, qty)
     navigate('/cart')
   }
 
@@ -83,22 +97,56 @@ export default function ProductDetail() {
             <div><span>Packaging</span><strong>To be updated</strong></div>
           </div>
 
-          {/* Qty + Cart + Buy Now */}
-          <div className="pd-qty-row">
-            <button className="pd-qty-btn" onClick={() => setQty(q => Math.max(1, q - 1))}><Minus size={14}/></button>
-            <span className="pd-qty-val">{qty}</span>
-            <button className="pd-qty-btn" onClick={() => setQty(q => q + 1)}><Plus size={14}/></button>
-            <span className="pd-qty-unit">{product.unit || 'kg'}</span>
+          {/* Weight selector */}
+          <div className="pd-weight-label">Select Weight</div>
+          <div className="pd-weight-options">
+            {WEIGHT_OPTIONS.map(w => (
+              <button
+                key={w}
+                className={`pd-weight-btn${weight === w ? ' active' : ''}${w === 'Bulk' ? ' bulk' : ''}`}
+                onClick={() => setWeight(w)}
+              >
+                {w}
+              </button>
+            ))}
           </div>
 
-          <div className="pd-actions">
-            <button className={`btn-primary${added ? ' pd-added' : ''}`} onClick={handleAddToCart}>
-              <ShoppingCart size={16}/> {added ? 'Added to Cart ✓' : 'Add to Cart'}
-            </button>
-            <button className="btn-gold" onClick={handleBuyNow}>
-              <Zap size={16}/> Buy Now
-            </button>
-          </div>
+          {/* Price display */}
+          {displayPrice && !isBulk && (
+            <div className="pd-price-display">
+              Rs. {displayPrice} <span>for {weight}</span>
+            </div>
+          )}
+          {isBulk && (
+            <div className="pd-bulk-note">
+              Bulk orders (above 5kg) — Contact us for pricing and availability.
+            </div>
+          )}
+
+          {/* Actions */}
+          {isBulk ? (
+            <div className="pd-actions">
+              <Link to="/contact" className="btn-primary" style={{justifyContent:'center'}}>
+                <MessageSquare size={16}/> Request Bulk Quote
+              </Link>
+              <a
+                href={`https://wa.me/918919499446?text=${encodeURIComponent(`Hello! I need bulk quantity of ${product.name}. Please share pricing and availability.`)}`}
+                target="_blank" rel="noreferrer"
+                className="btn-gold" style={{display:'inline-flex',alignItems:'center',gap:'8px',padding:'14px 28px',borderRadius:'6px',textDecoration:'none',justifyContent:'center'}}
+              >
+                WhatsApp Sales
+              </a>
+            </div>
+          ) : (
+            <div className="pd-actions">
+              <button className={`btn-primary${added ? ' pd-added' : ''}`} onClick={handleAddToCart}>
+                <ShoppingCart size={16}/> {added ? 'Added ✓' : 'Add to Cart'}
+              </button>
+              <button className="btn-gold" onClick={handleBuyNow}>
+                <Zap size={16}/> Buy Now
+              </button>
+            </div>
+          )}
           <div className="pd-action-links">
             <Link to="/contact"><MessageSquare size={13}/> Request Bulk Quote</Link>
             <Link to="/contact"><Phone size={13}/> Contact Sales</Link>
