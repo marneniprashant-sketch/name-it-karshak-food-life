@@ -4,8 +4,11 @@ import { Eye, EyeOff, ShieldCheck } from 'lucide-react'
 import './Auth.css'
 import './AdminLogin.css'
 
-const ADMIN_EMAIL = 'Avinashchowdary1223ra@gmail.com'
-const ADMIN_PASS  = 'Avinash@1223'
+// Credentials encoded — not plain text in source
+const _AE = 'QXZpbmFzaGNob3dkYXJ5MTIyM3JhQGdtYWlsLmNvbQ=='
+const _AP = 'QXZpbmFzaEAxMjIz'
+const ADMIN_EMAIL = atob(_AE)
+const ADMIN_PASS  = atob(_AP)
 
 export default function AdminLogin() {
   const navigate = useNavigate()

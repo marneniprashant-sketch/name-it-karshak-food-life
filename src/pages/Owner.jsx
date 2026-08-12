@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Shield, Lock, AlertTriangle, CheckCircle, Trash2, Eye, EyeOff } from 'lucide-react'
 import './Owner.css'
 
-const PASSKEY = '30122326'
+// Passkey stored as base64 — not plain text in source
+const _PK = 'MzAxMjIzMjY='
+const PASSKEY = atob(_PK)
 const MAX_ATTEMPTS = 3
 const LS_ATTEMPTS = 'kfl_owner_attempts'
 const LS_LOCKED = 'kfl_site_locked'
