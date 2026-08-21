@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Send } from 'lucide-react'
 import { categories } from '../data/products'
@@ -65,15 +65,27 @@ export default function Contact() {
             <div className="contact-placeholders">
               <div>
                 <strong>Phone</strong>
-                <a href="tel:+918919499446" style={{ color: 'inherit', fontStyle: 'normal' }}>+91 89194 99446</a>
+                <a href="tel:+917569955904" style={{ color: 'inherit', fontStyle: 'normal' }}>+91 75699 55904</a>
               </div>
               <div>
                 <strong>Email</strong>
-                <span>Coming soon</span>
+                <a href="mailto:info@karshakfoodlife.com" style={{ color: 'inherit', fontStyle: 'normal' }}>info@karshakfoodlife.com</a>
               </div>
               <div>
-                <strong>Location</strong>
-                <span>Flat No-503, New Srusti Homes,<br />ESI Metro Pillar No-1010,<br />SR Nagar, Hyderabad,<br />Telangana - 500038</span>
+                <strong>Head Office</strong>
+                <span>SR Nagar, Hyderabad,<br />Telangana – 500038</span>
+              </div>
+              <div>
+                <strong>Branch Office</strong>
+                <span>Gullapllali, Cherukupalli Mandal,<br />Bapatla Dt, Andhra Pradesh – 522309</span>
+              </div>
+              <div>
+                <strong>FSSAI License</strong>
+                <span>23625030003631</span>
+              </div>
+              <div>
+                <strong>Registration</strong>
+                <span>MSME – Ministry of MSME, Govt. of India</span>
               </div>
             </div>
             <div className="contact-links">

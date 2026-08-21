@@ -56,13 +56,18 @@ export default function Footer() {
 
         <div className="footer-col">
           <h4>Contact</h4>
-          <a href="tel:+918919499446">📞 +91 89194 99446</a>
-          <span style={{fontStyle:'italic', fontSize:'12px', color:'rgba(255,255,255,0.4)'}}>Email: Coming soon</span>
+          <a href="tel:+917569955904">📞 +91 75699 55904</a>
+          <a href="mailto:info@karshakfoodlife.com">✉ info@karshakfoodlife.com</a>
           <span style={{lineHeight:'1.6', marginTop:'4px'}}>
-            📍 Flat No-503, New Srusti Home's,<br />
-            ESI Metro Pillar No-1010,<br />
-            SR Nagar, Hyderabad,<br />
-            Telangana – 500038
+            📍 Head Office: SR Nagar,<br />
+            Hyderabad, Telangana – 500038
+          </span>
+          <span style={{lineHeight:'1.6', marginTop:'4px', fontSize:'11px', color:'rgba(255,255,255,0.5)'}}>
+            Branch: Gullapllali, Cherukupalli Mandal,<br />
+            Bapatla Dt, Andhra Pradesh – 522309
+          </span>
+          <span style={{marginTop:'6px', fontSize:'11px', color:'rgba(255,255,255,0.5)'}}>
+            FSSAI: 23625030003631
           </span>
         </div>
       </div>

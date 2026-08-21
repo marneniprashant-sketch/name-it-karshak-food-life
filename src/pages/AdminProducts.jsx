@@ -1,205 +1,307 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Save, X, Upload, ArrowLeft, Eye, Edit3, CheckCircle } from 'lucide-react'
+import { Search, Save, X, CheckCircle } from 'lucide-react'
 import { useProducts } from '../context/ProductContext'
 import './AdminProducts.css'
 
-function Guard({ children }) {
+/* ── Auth guard ─────────────────────────────────────────────────────────── */
+function Guard() {
   const navigate = useNavigate()
-  const ok = sessionStorage.getItem('kfl_admin') === 'true'
-  React.useEffect(() => { if (!ok) navigate('/admin') }, [ok, navigate])
-  if (!ok) return null
-  return children
+  React.useEffect(() => {
+    if (sessionStorage.getItem('kfl_admin') !== 'true') {
+      navigate('/admin')
+    }
+  }, [navigate])
+  return null
 }
 
-function EditView({ product, form, upd, handleImg, handleSave, cancelEdit, saved, uploading }) {
+/* ── ImgBB upload helper ────────────────────────────────────────────────── */
+async function uploadToImgBB(file) {
+  const formData = new FormData()
+  formData.append('image', file)
+  const res = await fetch('https://api.imgbb.com/1/upload?key=6ce29011c68ab8a14526f46876b23b54', {
+    method: 'POST',
+    body: formData,
+  })
+  const json = await res.json()
+  if (!json.success) throw new Error('ImgBB upload failed')
+  return json.data.url
+}
+
+/* ── Edit view ──────────────────────────────────────────────────────────── */
+function EditView({ product, form, upd, setForm, handleImg, handleSave, cancelEdit, saved, uploading, imgbbKey, setImgbbKey }) {
   return (
-    <Guard>
-      <div className="adm-prod-page">
-        <div className="adm-prod-header">
-          <button className="adm-back-btn" onClick={cancelEdit}><ArrowLeft size={15} /> Back</button>
-          <h1>Edit: {product.name}</h1>
-          <a href={'/products/' + product.category + '/' + product.slug} target="_blank" rel="noreferrer" className="adm-live-btn">
-            <Eye size={14} /> Live Page
-          </a>
-        </div>
-        <div className="adm-edit-layout">
-          <div className="adm-edit-left">
-            <div className="adm-img-preview">
-              {form.image && !form.image.startsWith('data:')
-                ? <img src={form.image} alt="Product" />
-                : <div className="adm-img-placeholder"><Upload size={32} /><span>{uploading ? 'Uploading...' : 'No image'}</span></div>
-              }
-            </div>
-            <label className="adm-upload-btn" style={uploading ? {opacity:0.6,pointerEvents:'none'} : {}}>
-              <Upload size={15} /> {uploading ? 'Uploading...' : 'Upload Image'}
-              <input type="file" accept="image/*" onChange={handleImg} style={{ display: 'none' }} />
-            </label>
-            <p style={{fontSize:'11px',color:'#999',textAlign:'center',marginTop:'4px'}}>Uploads to cloud — permanent URL</p>
-            <input className="adm-field-input" placeholder="Or paste image URL" value={form.image.startsWith('data:') ? '' : form.image} onChange={upd('image')} style={{marginTop:'8px'}} />
+    <div className="adm-edit-view">
+      <div className="adm-edit-header">
+        <button className="adm-cancel-btn" onClick={cancelEdit}><X size={15} /> Back to Products</button>
+        <h2>Edit: {product.name}</h2>
+      </div>
+
+      {saved ? (
+        <div className="adm-saved-banner">
+          <div className="adm-saved-msg"><CheckCircle size={18} /> Changes saved to cloud successfully!</div>
+          <p style={{ fontSize: '12px', color: '#555', margin: '6px 0 12px' }}>Image and all details are now live for all users on every device.</p>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button className="adm-save-btn" onClick={() => cancelEdit()}>← Back to Products</button>
           </div>
-          <div className="adm-edit-right">
-            <div className="adm-edit-grid">
-              <div className="adm-field"><label>Product Name</label><input value={form.name} onChange={upd('name')} /></div>
-              <div className="adm-field"><label>Local Name</label><input value={form.localName} onChange={upd('localName')} /></div>
-              <div className="adm-field"><label>Price (Rs.)</label><input value={form.price} placeholder="e.g. 850" onChange={upd('price')} /></div>
-              <div className="adm-field">
-                <label>Unit</label>
-                <select value={form.unit} onChange={upd('unit')}>
-                  <option>per kg</option><option>per 100g</option><option>per tonne</option><option>per bag</option><option>per box</option>
-                </select>
-              </div>
-              <div className="adm-field"><label>Origin</label><input value={form.origin} placeholder="e.g. Maharashtra" onChange={upd('origin')} /></div>
-              <div className="adm-field"><label>Availability</label><input value={form.availability} onChange={upd('availability')} /></div>
-            </div>
-            <div className="adm-field full"><label>Short Description</label><input value={form.shortDescription} onChange={upd('shortDescription')} /></div>
-            <div className="adm-field full"><label>Overview</label><textarea rows={4} value={form.overview} onChange={upd('overview')} /></div>
-            <div className="adm-field full"><label>Highlights <span className="adm-hint">comma separated</span></label><input value={form.highlights} onChange={upd('highlights')} /></div>
-            <div className="adm-field full"><label>Grades <span className="adm-hint">comma separated</span></label><input value={form.grades} onChange={upd('grades')} /></div>
-            <div className="adm-field full"><label>Packaging Options <span className="adm-hint">comma separated</span></label><input value={form.packaging} onChange={upd('packaging')} /></div>
-            <div className="adm-field full"><label>Applications <span className="adm-hint">comma separated</span></label><input value={form.applications} onChange={upd('applications')} /></div>
-            <div className="adm-save-row">
-              {saved ? (
-                <div className="adm-saved-msg"><CheckCircle size={16} /> Saved permanently!</div>
-              ) : (
-                <>
-                  <button className="adm-save-btn" onClick={handleSave} disabled={uploading}><Save size={15} /> Save Changes</button>
-                  <button className="adm-cancel-btn" onClick={cancelEdit}><X size={15} /> Cancel</button>
-                </>
+        </div>
+      ) : (
+        <div className="adm-edit-form">
+          <div className="adm-form-row">
+            <label>Name<input value={form.name || ''} onChange={upd('name')} /></label>
+            <label>Local Name<input value={form.localName || ''} onChange={upd('localName')} /></label>
+          </div>
+          <div className="adm-form-row">
+            <label>Price<input value={form.price || ''} onChange={upd('price')} /></label>
+            <label>Unit<input value={form.unit || ''} onChange={upd('unit')} /></label>
+          </div>
+          <div className="adm-form-row">
+            <label>Origin<input value={form.origin || ''} onChange={upd('origin')} /></label>
+            <label>Availability<input value={form.availability || ''} onChange={upd('availability')} /></label>
+          </div>
+          <label>Short Description<textarea rows={2} value={form.shortDescription || ''} onChange={upd('shortDescription')} /></label>
+          <label>Overview<textarea rows={3} value={form.overview || ''} onChange={upd('overview')} /></label>
+          <div className="adm-form-row">
+            <label>Grades (comma-separated)<input value={form.grades || ''} onChange={upd('grades')} /></label>
+            <label>Packaging (comma-separated)<input value={form.packaging || ''} onChange={upd('packaging')} /></label>
+          </div>
+          <label>Applications (comma-separated)<input value={form.applications || ''} onChange={upd('applications')} /></label>
+          <label>Highlights (one per line)<textarea rows={4} value={form.highlights || ''} onChange={upd('highlights')} /></label>
+
+          <div className="adm-img-section">
+            <label>Image URL<input value={form.image || ''} onChange={upd('image')} placeholder="https://..." /></label>
+            <div className="adm-img-upload">
+              <label className="adm-upload-btn">
+                Upload Image
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImg} />
+              </label>
+              {uploading && <span style={{ fontSize: '12px', color: '#666' }}>Uploading…</span>}
+              {form.image && !form.image.startsWith('data:') && (
+                <p style={{ fontSize: '11px', color: '#999', textAlign: 'center', marginTop: '4px' }}>Image saved permanently to cloud</p>
+              )}
+              {form.image && form.image.startsWith('data:') && (
+                <p style={{ fontSize: '11px', color: '#e53935', textAlign: 'center', marginTop: '4px', fontWeight: 600 }}>
+                  ⚠ Upload failed — paste a URL instead
+                </p>
               )}
             </div>
+            <label>ImgBB API Key (optional)
+              <input
+                value={imgbbKey}
+                onChange={e => {
+                  setImgbbKey(e.target.value)
+                  localStorage.setItem('kfl_imgbb_key', e.target.value)
+                }}
+                placeholder="Your ImgBB API key"
+              />
+            </label>
+          </div>
+
+          <div className="adm-save-row">
+            <button className="adm-save-btn" onClick={handleSave} disabled={uploading}><Save size={15} /> Save Changes</button>
+            <button className="adm-cancel-btn" onClick={cancelEdit}><X size={15} /> Cancel</button>
           </div>
         </div>
-      </div>
-    </Guard>
+      )}
+    </div>
   )
 }
 
-function ListView({ products, categories, filtered, search, setSearch, catFilter, setCatFilter, startEdit }) {
-  const navigate = useNavigate()
-  return (
-    <Guard>
-      <div className="adm-prod-page">
-        <div className="adm-prod-header">
-          <button className="adm-back-btn" onClick={() => navigate('/admin/dashboard')}><ArrowLeft size={15} /> Dashboard</button>
-          <h1>Product Management</h1>
-          <a href="/products" target="_blank" rel="noreferrer" className="adm-live-btn"><Eye size={14} /> View Live</a>
-        </div>
-        <div className="adm-prod-filters">
-          <div className="adm-search-wrap">
-            <Search size={16} />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or Indian name..." />
-          </div>
-          <div className="adm-cat-tabs">
-            <button className={catFilter === 'all' ? 'active' : ''} onClick={() => setCatFilter('all')}>All ({products.length})</button>
-            {categories.map(c => (
-              <button key={c.id} className={catFilter === c.id ? 'active' : ''} onClick={() => setCatFilter(c.id)}>
-                {c.label} ({products.filter(p => p.category === c.id).length})
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="adm-prod-table-wrap">
-          <table className="adm-prod-table">
-            <thead>
-              <tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Origin</th><th>Availability</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-              {filtered.map(p => (
-                <tr key={p.id}>
-                  <td><img src={p.image} alt={p.name} className="adm-thumb" /></td>
-                  <td>
-                    <strong>{p.name}</strong>
-                    {p.localName && <span className="adm-local"> — {p.localName}</span>}
-                    <div className="adm-desc">{(p.shortDescription || '').slice(0, 60)}...</div>
-                  </td>
-                  <td><span className="adm-cat-chip">{categories.find(c => c.id === p.category)?.label}</span></td>
-                  <td>{p.price ? <span className="adm-price">Rs.{p.price} <small>{p.unit}</small></span> : <span className="adm-tbd">Not set</span>}</td>
-                  <td>{p.origin || <span className="adm-tbd">—</span>}</td>
-                  <td>{p.availability || 'Bulk / Retail'}</td>
-                  <td><button className="adm-edit-btn" onClick={() => startEdit(p)}><Edit3 size={13} /> Edit</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </Guard>
-  )
-}
-
+/* ── Main component ─────────────────────────────────────────────────────── */
 export default function AdminProducts() {
   const { products, categories, updateProduct } = useProducts()
+
   const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('all')
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState({})
   const [saved, setSaved] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [imgbbKey, setImgbbKey] = useState(
+    () => localStorage.getItem('kfl_imgbb_key') || ''
+  )
 
-  const filtered = products.filter(p => {
+  const allProducts = products
+
+  /* filtered product list */
+  const filtered = allProducts.filter(p => {
+    const matchesCat = catFilter === 'all' || p.category === catFilter
     const q = search.toLowerCase()
-    const matchCat = catFilter === 'all' || p.category === catFilter
-    const matchQ = !q || p.name.toLowerCase().includes(q) || (p.localName || '').toLowerCase().includes(q)
-    return matchCat && matchQ
+    const matchesSearch =
+      !q ||
+      p.name.toLowerCase().includes(q) ||
+      (p.localName && p.localName.toLowerCase().includes(q)) ||
+      p.category.toLowerCase().includes(q)
+    return matchesCat && matchesSearch
   })
 
-  const startEdit = (p) => {
+  function startEdit(p) {
     setEditing(p.id)
-    setSaved(false)
     setForm({
-      name: p.name || '', localName: p.localName || '',
-      shortDescription: p.shortDescription || '', overview: p.overview || '',
-      origin: p.origin || '', price: p.price || '', unit: p.unit || 'per kg',
-      availability: p.availability || 'Bulk / Retail',
-      packaging: (p.packaging || []).join(', '), grades: (p.grades || []).join(', '),
-      applications: (p.applications || []).join(', '), highlights: (p.highlights || []).join(', '),
+      name: p.name || '',
+      localName: p.localName || '',
+      price: p.price || '',
+      unit: p.unit || '',
+      origin: p.origin || '',
+      availability: p.availability || '',
+      shortDescription: p.shortDescription || '',
+      overview: p.overview || '',
+      highlights: Array.isArray(p.highlights) ? p.highlights.join('\n') : (p.highlights || ''),
+      grades: Array.isArray(p.grades) ? p.grades.join(', ') : (p.grades || ''),
+      packaging: Array.isArray(p.packaging) ? p.packaging.join(', ') : (p.packaging || ''),
+      applications: Array.isArray(p.applications) ? p.applications.join(', ') : (p.applications || ''),
       image: p.image || '',
     })
   }
 
-  const cancelEdit = () => { setEditing(null); setForm({}) }
-  const upd = (key) => (e) => setForm(prev => ({ ...prev, [key]: e.target.value }))
+  function cancelEdit() {
+    setEditing(null)
+    setForm({})
+    setSaved(false)
+  }
 
-  const handleImg = async (e) => {
+  const upd = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }))
+
+  async function handleImg(e) {
     const file = e.target.files[0]
     if (!file) return
     setUploading(true)
     try {
-      const fd = new FormData()
-      fd.append('image', file)
-      const res = await fetch('https://api.imgbb.com/1/upload?key=6ce29011c68ab8a14526f46876b23b54', { method: 'POST', body: fd })
-      const data = await res.json()
-      if (data.success) {
-        setForm(prev => ({ ...prev, image: data.data.url }))
-      } else {
-        alert('Image upload failed. Please paste an image URL instead.')
-      }
-    } catch {
-      alert('Image upload failed. Please paste an image URL instead.')
+      const url = await uploadToImgBB(file)
+      setForm(f => ({ ...f, image: url }))
+    } catch (err) {
+      alert('Image upload failed: ' + err.message + '\nPlease paste an image URL instead.')
+      setForm(f => ({ ...f, image: '' }))
+    } finally {
+      setUploading(false)
     }
-    setUploading(false)
   }
 
-  const handleSave = () => {
-    const imageToSave = (form.image && form.image.startsWith('data:')) ? '' : form.image
+  function handleSave() {
+    const toArray = (val, sep = ',') =>
+      typeof val === 'string'
+        ? val.split(sep).map(s => s.trim()).filter(Boolean)
+        : val || []
+
     updateProduct(editing, {
-      ...form,
-      image: imageToSave,
-      packaging: form.packaging.split(',').map(s => s.trim()).filter(Boolean),
-      grades: form.grades.split(',').map(s => s.trim()).filter(Boolean),
-      applications: form.applications.split(',').map(s => s.trim()).filter(Boolean),
-      highlights: form.highlights.split(',').map(s => s.trim()).filter(Boolean),
+      name: form.name,
+      localName: form.localName,
+      price: form.price,
+      unit: form.unit,
+      origin: form.origin,
+      availability: form.availability,
+      shortDescription: form.shortDescription,
+      overview: form.overview,
+      highlights: toArray(form.highlights, '\n'),
+      grades: toArray(form.grades),
+      packaging: toArray(form.packaging),
+      applications: toArray(form.applications),
+      image: form.image,
     })
+
     setSaved(true)
-    setTimeout(() => { setSaved(false); setEditing(null) }, 1400)
   }
 
-  const product = editing ? products.find(p => p.id === editing) : null
+  const editingProduct = editing ? products.find(p => p.id === editing) : null
 
-  if (editing && product) {
-    return <EditView product={product} form={form} upd={upd} handleImg={handleImg} handleSave={handleSave} cancelEdit={cancelEdit} saved={saved} uploading={uploading} />
-  }
+  return (
+    <div className="adm-prod-page">
+      <Guard />
+      {editing && editingProduct ? (
+        <EditView
+          product={editingProduct}
+          form={form}
+          upd={upd}
+          setForm={setForm}
+          handleImg={handleImg}
+          handleSave={handleSave}
+          cancelEdit={cancelEdit}
+          saved={saved}
+          setSaved={setSaved}
+          uploading={uploading}
+          imgbbKey={imgbbKey}
+          setImgbbKey={setImgbbKey}
+        />
+      ) : (
+        <>
+          <div className="adm-prod-header">
+            <h1>Products</h1>
+          </div>
 
-  return <ListView products={products} categories={categories} filtered={filtered} search={search} setSearch={setSearch} catFilter={catFilter} setCatFilter={setCatFilter} startEdit={startEdit} />
+          {/* Filters */}
+          <div className="adm-prod-filters">
+            <div className="adm-search-wrap">
+              <Search size={15} />
+              <input
+                type="text"
+                placeholder="Search products…"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+            </div>
+            <div className="adm-cat-tabs">
+              <button
+                className={catFilter === 'all' ? 'active' : ''}
+                onClick={() => setCatFilter('all')}
+              >
+                All ({allProducts.length})
+              </button>
+              {categories.map(c => (
+                <button
+                  key={c.id}
+                  className={catFilter === c.id ? 'active' : ''}
+                  onClick={() => setCatFilter(c.id)}
+                >
+                  {c.name} ({allProducts.filter(p => p.category === c.id).length})
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="adm-prod-table-wrap">
+            <table className="adm-prod-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Origin</th>
+                  <th>Availability</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(p => {
+                  const cat = categories.find(c => c.id === p.category)
+                  return (
+                    <tr key={p.id}>
+                      <td>
+                        {p.image
+                          ? <img src={p.image} alt={p.name} className="adm-thumb" />
+                          : <div className="adm-thumb-placeholder">No image</div>
+                        }
+                      </td>
+                      <td>
+                        <div className="adm-prod-name">{p.name}</div>
+                        {p.localName && <div className="adm-prod-local">{p.localName}</div>}
+                      </td>
+                      <td>{cat ? cat.name : p.category}</td>
+                      <td>{p.price} {p.unit}</td>
+                      <td>{p.origin}</td>
+                      <td>{p.availability}</td>
+                      <td>
+                        <button className="adm-edit-btn" onClick={() => startEdit(p)}>Edit</button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  )
 }
