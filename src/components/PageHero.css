@@ -1,7 +1,7 @@
 .page-hero {
   position: relative;
   width: 100%;
-  height: clamp(320px, 42vh, 480px);
+  height: clamp(620px, 78vh, 820px);
   overflow: hidden;
   background: #0b1e10;
 }
@@ -113,7 +113,7 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-  .page-hero { height: clamp(260px, 38vh, 340px); }
+  .page-hero { height: clamp(580px, 100svh, 740px); }
   .ph-content { padding-bottom: 56px; }
   .ph-arrow { display: none; }
 }
