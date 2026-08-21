@@ -22,15 +22,16 @@
   transition: background 0.85s ease;
 }
 
-/* Content — matches homepage hero positioning exactly */
+/* Content — middle-left positioning */
 .ph-content {
   position: relative; z-index: 2;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: 100px;
+  justify-content: center;
   padding-top: 100px;
+  padding-bottom: 60px;
+  max-width: 660px;
 }
 
 .ph-badge {

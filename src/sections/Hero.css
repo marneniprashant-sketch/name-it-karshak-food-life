@@ -37,9 +37,9 @@
   z-index: 2;
   height: 100%;
   display: flex;
-  align-items: flex-end;
-  padding-top: 72px;
-  padding-bottom: 80px;
+  align-items: center;
+  padding-top: 100px;
+  padding-bottom: 60px;
 }
 
 .hc-text {
