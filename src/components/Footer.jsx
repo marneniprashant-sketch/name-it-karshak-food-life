@@ -66,8 +66,12 @@ export default function Footer() {
 
         <div className="footer-col">
           <h4>Contact</h4>
-          <a href="tel:+917569955904">📞 +91 75699 55904</a>
-          <a href="mailto:info@karshakfoodlife.com">✉ info@karshakfoodlife.com</a>
+          <a href="tel:+917569955904" style={{display:'flex',alignItems:'center',gap:'6px'}}>
+            <span>📞</span><span>+91 75699 55904</span>
+          </a>
+          <a href="mailto:info@karshakfoodlife.com" style={{display:'flex',alignItems:'center',gap:'6px'}}>
+            <span>✉</span><span>info@karshakfoodlife.com</span>
+          </a>
           <span style={{lineHeight:'1.6', marginTop:'4px'}}>
             📍 Head Office: SR Nagar,<br />
             Hyderabad, Telangana – 500038
