@@ -34,6 +34,25 @@ export function ProductProvider({ children }) {
     await pushProducts(updated)
   }
 
+  const addProduct = async (newProduct) => {
+    const slug = newProduct.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    const product = {
+      id: Date.now(),
+      slug,
+      ...newProduct,
+    }
+    const updated = [...products, product]
+    setProducts(updated)
+    await pushProducts(updated)
+    return product
+  }
+
+  const deleteProduct = async (id) => {
+    const updated = products.filter(p => p.id !== id)
+    setProducts(updated)
+    await pushProducts(updated)
+  }
+
   const getProductsByCategory = (catId) => products.filter(p => p.category === catId)
   const getProductBySlug = (catId, slug) => products.find(p => p.category === catId && p.slug === slug)
   const searchProducts = (q) => {
@@ -46,7 +65,7 @@ export function ProductProvider({ children }) {
   }
 
   return (
-    <ProductContext.Provider value={{ products, categories, loading, updateProduct, getProductsByCategory, getProductBySlug, searchProducts, refresh }}>
+    <ProductContext.Provider value={{ products, categories, loading, updateProduct, addProduct, deleteProduct, getProductsByCategory, getProductBySlug, searchProducts, refresh }}>
       {children}
     </ProductContext.Provider>
   )

@@ -173,3 +173,64 @@
   color: var(--green);
   margin-bottom: 4px;
 }
+
+/* Add Product button */
+.adm-add-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--green); color: white;
+  padding: 9px 18px; border-radius: 8px; border: none;
+  font-family: var(--font-head); font-weight: 700; font-size: 13px;
+  cursor: pointer; transition: background 0.2s;
+}
+.adm-add-btn:hover { background: var(--forest); }
+
+/* Delete button */
+.adm-del-btn {
+  background: #fff5f5; border: 1px solid #fdd;
+  color: #e53935; width: 32px; height: 32px;
+  border-radius: 7px; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; transition: all 0.2s;
+}
+.adm-del-btn:hover { background: #e53935; color: white; border-color: #e53935; }
+
+/* Edit form styles */
+.adm-edit-view { padding: 20px 28px 60px; }
+.adm-edit-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px; padding-bottom: 16px;
+  border-bottom: 1px solid #e8ede8;
+}
+.adm-edit-header h2 {
+  font-family: var(--font-head); font-size: 18px;
+  font-weight: 800; color: var(--forest); margin: 0;
+}
+.adm-edit-form { display: flex; flex-direction: column; gap: 14px; max-width: 800px; }
+.adm-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.adm-edit-form label {
+  display: flex; flex-direction: column; gap: 5px;
+  font-family: var(--font-head); font-weight: 700;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #666;
+}
+.adm-edit-form input, .adm-edit-form select, .adm-edit-form textarea {
+  padding: 10px 12px; border: 1.5px solid #dde8dd; border-radius: 8px;
+  font-family: var(--font-body); font-size: 13px; color: #333;
+  background: #fafcfa; outline: none; transition: border 0.2s;
+}
+.adm-edit-form input:focus, .adm-edit-form select:focus, .adm-edit-form textarea:focus {
+  border-color: var(--green); background: white;
+}
+.adm-edit-form textarea { resize: vertical; }
+.adm-img-section { display: flex; flex-direction: column; gap: 10px; }
+.adm-img-upload { display: flex; align-items: center; gap: 12px; }
+.adm-thumb-placeholder {
+  width: 52px; height: 52px; border-radius: 8px;
+  background: #f0f0f0; display: flex; align-items: center;
+  justify-content: center; font-size: 10px; color: #aaa;
+}
+.adm-prod-name { font-weight: 600; color: var(--forest); font-size: 14px; }
+.adm-prod-local { font-size: 11px; color: #888; }
+
+@media (max-width: 640px) {
+  .adm-form-row { grid-template-columns: 1fr; }
+  .adm-edit-view { padding: 16px; }
+}

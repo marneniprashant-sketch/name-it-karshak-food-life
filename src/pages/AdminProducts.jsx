@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Save, X, CheckCircle } from 'lucide-react'
+import { Search, Save, X, CheckCircle, Plus, Trash2 } from 'lucide-react'
 import { useProducts } from '../context/ProductContext'
 import './AdminProducts.css'
 
@@ -109,11 +109,12 @@ function EditView({ product, form, upd, setForm, handleImg, handleSave, cancelEd
 
 /* ── Main component ─────────────────────────────────────────────────────── */
 export default function AdminProducts() {
-  const { products, categories, updateProduct } = useProducts()
+  const { products, categories, updateProduct, addProduct, deleteProduct } = useProducts()
 
   const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('all')
   const [editing, setEditing] = useState(null)
+  const [adding, setAdding] = useState(false)
   const [form, setForm] = useState({})
   const [saved, setSaved] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -156,8 +157,39 @@ export default function AdminProducts() {
 
   function cancelEdit() {
     setEditing(null)
+    setAdding(false)
     setForm({})
     setSaved(false)
+  }
+
+  function startAdd() {
+    setAdding(true)
+    setEditing(null)
+    setSaved(false)
+    setForm({ category: categories[0]?.id || 'dry-fruits', unit: 'per kg', availability: 'Bulk / Retail' })
+  }
+
+  async function handleAddSave() {
+    const toArray = (val, sep = ',') =>
+      typeof val === 'string' ? val.split(sep).map(s => s.trim()).filter(Boolean) : val || []
+    await addProduct({
+      name: form.name || 'New Product',
+      localName: form.localName || '',
+      category: form.category || 'dry-fruits',
+      price: form.price || '',
+      unit: form.unit || 'per kg',
+      origin: form.origin || '',
+      availability: form.availability || 'Bulk / Retail',
+      shortDescription: form.shortDescription || '',
+      overview: form.overview || '',
+      highlights: toArray(form.highlights, '\n'),
+      grades: toArray(form.grades),
+      packaging: toArray(form.packaging),
+      applications: toArray(form.applications),
+      image: form.image || '',
+    })
+    setSaved(true)
+    setTimeout(() => { setAdding(false); setForm({}); setSaved(false) }, 1500)
   }
 
   const upd = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }))
@@ -222,10 +254,67 @@ export default function AdminProducts() {
           imgbbKey={imgbbKey}
           setImgbbKey={setImgbbKey}
         />
+      ) : adding ? (
+        <div className="adm-edit-view">
+          <div className="adm-edit-header">
+            <button className="adm-cancel-btn" onClick={cancelEdit}><X size={15} /> Cancel</button>
+            <h2>Add New Product</h2>
+          </div>
+          {saved ? (
+            <div className="adm-saved-banner">
+              <div className="adm-saved-msg"><CheckCircle size={18} /> Product added successfully!</div>
+            </div>
+          ) : (
+            <div className="adm-edit-form">
+              <div className="adm-form-row">
+                <label>Product Name *<input value={form.name || ''} onChange={upd('name')} placeholder="e.g. Black Sesame Seeds" /></label>
+                <label>Local / Indian Name<input value={form.localName || ''} onChange={upd('localName')} placeholder="e.g. Kala Til" /></label>
+              </div>
+              <div className="adm-form-row">
+                <label>Category *
+                  <select value={form.category || ''} onChange={upd('category')}>
+                    {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                  </select>
+                </label>
+                <label>Price (Rs.)<input value={form.price || ''} onChange={upd('price')} placeholder="e.g. 450" /></label>
+              </div>
+              <div className="adm-form-row">
+                <label>Unit<input value={form.unit || ''} onChange={upd('unit')} placeholder="per kg" /></label>
+                <label>Origin<input value={form.origin || ''} onChange={upd('origin')} placeholder="e.g. Rajasthan" /></label>
+              </div>
+              <label>Availability<input value={form.availability || ''} onChange={upd('availability')} placeholder="Bulk / Retail" /></label>
+              <label>Short Description<textarea rows={2} value={form.shortDescription || ''} onChange={upd('shortDescription')} /></label>
+              <label>Overview<textarea rows={3} value={form.overview || ''} onChange={upd('overview')} /></label>
+              <div className="adm-form-row">
+                <label>Grades (comma-separated)<input value={form.grades || ''} onChange={upd('grades')} /></label>
+                <label>Packaging (comma-separated)<input value={form.packaging || ''} onChange={upd('packaging')} /></label>
+              </div>
+              <label>Applications (comma-separated)<input value={form.applications || ''} onChange={upd('applications')} /></label>
+              <label>Highlights (one per line)<textarea rows={3} value={form.highlights || ''} onChange={upd('highlights')} /></label>
+              <div className="adm-img-section">
+                <label>Image URL<input value={form.image || ''} onChange={upd('image')} placeholder="https://..." /></label>
+                <div className="adm-img-upload">
+                  <label className="adm-upload-btn">
+                    Upload Image
+                    <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImg} />
+                  </label>
+                  {uploading && <span style={{ fontSize: '12px', color: '#666' }}>Uploading…</span>}
+                </div>
+              </div>
+              <div className="adm-save-row">
+                <button className="adm-save-btn" onClick={handleAddSave} disabled={!form.name || uploading}>
+                  <Plus size={15} /> Add Product
+                </button>
+                <button className="adm-cancel-btn" onClick={cancelEdit}><X size={15} /> Cancel</button>
+              </div>
+            </div>
+          )}
+        </div>
       ) : (
         <>
           <div className="adm-prod-header">
-            <h1>Products</h1>
+            <h1>Products ({allProducts.length})</h1>
+            <button className="adm-add-btn" onClick={startAdd}><Plus size={15} /> Add New Product</button>
           </div>
 
           {/* Filters */}
@@ -292,7 +381,12 @@ export default function AdminProducts() {
                       <td>{p.origin}</td>
                       <td>{p.availability}</td>
                       <td>
-                        <button className="adm-edit-btn" onClick={() => startEdit(p)}>Edit</button>
+                        <div style={{display:'flex',gap:'6px'}}>
+                          <button className="adm-edit-btn" onClick={() => startEdit(p)}>Edit</button>
+                          <button className="adm-del-btn" onClick={() => { if(window.confirm(`Delete "${p.name}"?`)) deleteProduct(p.id) }} title="Delete">
+                            <Trash2 size={13}/>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   )
