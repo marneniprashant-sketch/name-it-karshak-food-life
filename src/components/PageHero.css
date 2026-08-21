@@ -22,15 +22,15 @@
   transition: background 0.85s ease;
 }
 
-/* Content */
+/* Content — matches homepage hero positioning exactly */
 .ph-content {
   position: relative; z-index: 2;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: 72px;
-  padding-top: 80px;
+  padding-bottom: 100px;
+  padding-top: 100px;
 }
 
 .ph-badge {
@@ -40,12 +40,12 @@
   color: #C99A3D;
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 4px 14px;
+  padding: 5px 16px;
   border-radius: 20px;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
   width: fit-content;
   animation: phFadeUp 0.6s ease forwards;
   opacity: 0;
@@ -53,20 +53,21 @@
 
 .ph-headline {
   font-family: var(--font-head);
-  font-size: clamp(32px, 4.5vw, 58px);
+  font-size: clamp(38px, 5vw, 68px);
   font-weight: 800;
   color: white;
-  line-height: 1.1;
-  margin-bottom: 12px;
+  line-height: 1.08;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
   animation: phFadeUp 0.65s ease 0.08s forwards;
   opacity: 0;
 }
 
 .ph-sub {
-  font-size: clamp(14px, 1.4vw, 17px);
-  color: rgba(255,255,255,0.78);
-  line-height: 1.6;
-  max-width: 520px;
+  font-size: clamp(15px, 1.5vw, 19px);
+  color: rgba(255,255,255,0.82);
+  line-height: 1.7;
+  max-width: 560px;
   animation: phFadeUp 0.65s ease 0.18s forwards;
   opacity: 0;
 }
