@@ -63,8 +63,8 @@ export default function Footer() {
             Hyderabad, Telangana – 500038
           </span>
           <span style={{lineHeight:'1.6', marginTop:'4px', fontSize:'11px', color:'rgba(255,255,255,0.5)'}}>
-            Branch: Gullapllali, Cherukupalli Mandal,<br />
-            Bapatla Dt, Andhra Pradesh – 522309
+            Branch: Gullapllali,<br />
+            Andhra Pradesh – 522309
           </span>
           <span style={{marginTop:'6px', fontSize:'11px', color:'rgba(255,255,255,0.5)'}}>
             FSSAI: 23625030003631

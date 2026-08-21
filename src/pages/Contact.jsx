@@ -62,6 +62,24 @@ export default function Contact() {
           <div className="contact-info">
             <h2>Business Enquiries</h2>
             <p>Use the form to send your enquiry and our team will respond promptly.</p>
+
+            {/* FSSAI + MSME badges */}
+            <div className="contact-cert-badges">
+              <div className="fssai-badge">
+                <div className="fssai-logo">
+                  <span className="fssai-text">fssai</span>
+                </div>
+                <div className="fssai-num">23625030003631</div>
+              </div>
+              <div className="msme-badge">
+                <span>🏛</span>
+                <div>
+                  <div className="msme-label">MSME Registered</div>
+                  <div className="msme-sub">Ministry of MSME, Govt. of India</div>
+                </div>
+              </div>
+            </div>
+
             <div className="contact-placeholders">
               <div>
                 <strong>Phone</strong>
@@ -77,15 +95,7 @@ export default function Contact() {
               </div>
               <div>
                 <strong>Branch Office</strong>
-                <span>Gullapllali, Cherukupalli Mandal,<br />Bapatla Dt, Andhra Pradesh – 522309</span>
-              </div>
-              <div>
-                <strong>FSSAI License</strong>
-                <span>23625030003631</span>
-              </div>
-              <div>
-                <strong>Registration</strong>
-                <span>MSME – Ministry of MSME, Govt. of India</span>
+                <span>Gullapllali, Andhra Pradesh – 522309</span>
               </div>
             </div>
             <div className="contact-links">
