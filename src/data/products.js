@@ -2,12 +2,14 @@
 // Add new products here. Pages are generated automatically.
 
 export const categories = [
-  { id: 'dry-fruits', label: 'Dry Fruits', description: 'Premium nuts and dried fruits sourced from finest orchards.', image: 'https://images.unsplash.com/photo-1596273501815-e56e41a0a6d2?w=600&q=80' },
-  { id: 'edible-seeds', label: 'Edible Seeds', description: 'Nutrient-rich seeds carefully cleaned and processed.', image: 'https://images.unsplash.com/photo-1583620028183-9e1f1f1b0e6b?w=600&q=80' },
-  { id: 'pulses', label: 'Pulses', description: 'High-quality lentils and legumes from trusted farms.', image: 'https://images.unsplash.com/photo-1612257997964-44e71a6c2bdf?w=600&q=80' },
-  { id: 'spices', label: 'Spices', description: 'Aromatic spices retaining their natural oils and flavour.', image: 'https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=600&q=80' },
-  { id: 'herbal-powders', label: 'Herbal Powders', description: 'Traditional herbal powders processed with care and purity.', image: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=600&q=80' },
-  { id: 'grains', label: 'Grains', description: 'Staple grains sourced from fertile agricultural regions.', image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80' },
+  { id: 'dry-fruits',     label: 'Dry Fruits',      description: 'Premium nuts and dried fruits sourced from finest orchards.',        image: 'https://images.unsplash.com/photo-1596273501815-e56e41a0a6d2?w=600&q=80' },
+  { id: 'edible-seeds',   label: 'Edible Seeds',    description: 'Nutrient-rich seeds carefully cleaned and processed.',               image: 'https://images.unsplash.com/photo-1583620028183-9e1f1f1b0e6b?w=600&q=80' },
+  { id: 'pulses',         label: 'Pulses',           description: 'High-quality lentils and legumes from trusted farms.',              image: 'https://images.unsplash.com/photo-1612257997964-44e71a6c2bdf?w=600&q=80' },
+  { id: 'spices',         label: 'Spices',           description: 'Aromatic spices retaining their natural oils and flavour.',         image: 'https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=600&q=80' },
+  { id: 'herbal-powders', label: 'Herbal Powders',   description: 'Traditional herbal powders processed with care and purity.',        image: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=600&q=80' },
+  { id: 'grains',         label: 'Grains',           description: 'Staple grains sourced from fertile agricultural regions.',          image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80' },
+  { id: 'beverages',      label: 'Beverages',        description: 'Natural and pure beverages including water and health drinks.',     image: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=600&q=80' },
+  { id: 'others',         label: 'Others',           description: 'Other premium natural and agricultural products.',                  image: 'https://images.unsplash.com/photo-1574570173583-e9c5ea660975?w=600&q=80' },
 ];
 
 export const products = [

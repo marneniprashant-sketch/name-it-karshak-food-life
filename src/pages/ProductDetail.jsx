@@ -28,30 +28,40 @@ export default function ProductDetail() {
   const cat = categories.find(c => c.id === category)
   const related = getProductsByCategory(category).filter(p => p.slug !== slug).slice(0, 4)
   const [qty, setQty] = useState(1)
-  const [weight, setWeight] = useState('500g')
+  const [weight, setWeight] = useState(null)
   const [added, setAdded] = useState(false)
 
-  const WEIGHT_OPTIONS = ['500g', '1kg', '2kg', '3kg', '4kg', '5kg', 'Bulk']
+  // Weight options per category type
+  const WEIGHT_MAP = {
+    'beverages': ['250ml', '500ml', '1L', '2L', '5L', 'Bulk'],
+    'default':   ['500g', '1kg', '2kg', '3kg', '4kg', '5kg', 'Bulk'],
+  }
+  const WEIGHT_OPTIONS = WEIGHT_MAP[category] || WEIGHT_MAP['default']
 
-  const isBulk = weight === 'Bulk'
+  // Set default weight on load
+  const selectedWeight = weight || WEIGHT_OPTIONS[1] // default to second option (1kg or 1L)
+  const isBulk = selectedWeight === 'Bulk'
 
-  // Calculate price based on weight selection
+  // Calculate price based on weight
   const getPrice = () => {
     if (!product.price) return null
     const base = parseFloat(product.price)
-    const map = { '500g': base * 0.5, '1kg': base, '2kg': base * 2, '3kg': base * 3, '4kg': base * 4, '5kg': base * 5 }
-    return map[weight] ? map[weight].toFixed(0) : null
+    const isBev = category === 'beverages'
+    const map = isBev
+      ? { '250ml': base * 0.25, '500ml': base * 0.5, '1L': base, '2L': base * 2, '5L': base * 5 }
+      : { '500g': base * 0.5, '1kg': base, '2kg': base * 2, '3kg': base * 3, '4kg': base * 4, '5kg': base * 5 }
+    return map[selectedWeight] ? map[selectedWeight].toFixed(0) : null
   }
   const displayPrice = getPrice()
 
   const handleAddToCart = () => {
-    addToCart({ ...product, selectedWeight: weight, unit: weight }, qty)
+    addToCart({ ...product, selectedWeight, unit: selectedWeight }, qty)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
 
   const handleBuyNow = () => {
-    addToCart({ ...product, selectedWeight: weight, unit: weight }, qty)
+    addToCart({ ...product, selectedWeight, unit: selectedWeight }, qty)
     navigate('/cart')
   }
 
@@ -103,7 +113,7 @@ export default function ProductDetail() {
             {WEIGHT_OPTIONS.map(w => (
               <button
                 key={w}
-                className={`pd-weight-btn${weight === w ? ' active' : ''}${w === 'Bulk' ? ' bulk' : ''}`}
+                className={`pd-weight-btn${selectedWeight === w ? ' active' : ''}${w === 'Bulk' ? ' bulk' : ''}`}
                 onClick={() => setWeight(w)}
               >
                 {w}
@@ -114,7 +124,7 @@ export default function ProductDetail() {
           {/* Price display */}
           {displayPrice && !isBulk && (
             <div className="pd-price-display">
-              Rs. {displayPrice} <span>for {weight}</span>
+              Rs. {displayPrice} <span>for {selectedWeight}</span>
             </div>
           )}
           {isBulk && (
