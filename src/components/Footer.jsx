@@ -24,6 +24,16 @@ export default function Footer() {
             <a href="#" aria-label="Facebook"><Facebook size={18}/></a>
             <a href="#" aria-label="YouTube"><Youtube size={18}/></a>
           </div>
+          <div className="footer-cert-badges">
+            <div className="footer-fssai">
+              <span className="footer-fssai-text">fssai</span>
+              <span className="footer-fssai-num">23625030003631</span>
+            </div>
+            <div className="footer-msme">
+              <span>🏛</span>
+              <span>MSME Registered</span>
+            </div>
+          </div>
         </div>
 
         <div className="footer-col">
@@ -65,9 +75,6 @@ export default function Footer() {
           <span style={{lineHeight:'1.6', marginTop:'4px', fontSize:'11px', color:'rgba(255,255,255,0.5)'}}>
             Branch: Gullapllali,<br />
             Andhra Pradesh – 522309
-          </span>
-          <span style={{marginTop:'6px', fontSize:'11px', color:'rgba(255,255,255,0.5)'}}>
-            FSSAI: 23625030003631
           </span>
         </div>
       </div>
